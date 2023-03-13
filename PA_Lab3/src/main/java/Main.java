@@ -1,19 +1,41 @@
-import LabWork.Company;
-import LabWork.Node;
-import LabWork.Person;
+import HomeWork.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        List<Node> nodes = new ArrayList<>();
-        nodes.add(new Person("Alice"));
-        nodes.add(new Company("Apple"));
-        nodes.add(new Person("Bob"));
-        nodes.add(new Company("Microsoft"));
-        nodes.sort(Comparator.comparing(Node::getName));
-        nodes.forEach(node -> System.out.println(node.getName()));
+        // create some persons
+        Person gigel = new Person("Gigel", new Date(2000, 1, 1), true);
+        Person becali = new Person("Becali", new Date(2001, 2, 2), false);
+        Programmer chirica = new Programmer("Chirica", new Date(2002, 3, 3),true,5);
+        Designer diana = new Designer("Diana", new Date(2003, 4, 4), true, new String[]{"Photoshop", "AfterEffects", "xD"});
+
+        // create some companies
+        Company apple = new Company("Apple", 1000);
+        Company google = new Company("Google", 250);
+
+
+        // add relationships
+        gigel.addRelationship(becali, "friend");
+        becali.addRelationship(gigel, "friend");
+        gigel.addJobRelationship(apple, "engineer");
+        chirica.addJobRelationship(apple, "programmer");
+        diana.addJobRelationship(google, "designer");
+        apple.addEmployee(gigel, "engineer");
+        apple.addEmployee(chirica, "programmer");
+        google.addEmployee(diana, "designer");
+
+        // create a network object
+        Network network = new Network();
+        network.addNode(gigel);
+        network.addNode(becali);
+        network.addNode(chirica);
+        network.addNode(diana);
+        network.addNode(apple);
+        network.addNode(google);
+
+        // print the network on the screen
+        network.printNetwork();
     }
+
 }
