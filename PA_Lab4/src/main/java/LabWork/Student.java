@@ -19,4 +19,9 @@ public class Student implements Comparable<Student> {
     public int compareTo(Student o) {
         return this.name.compareTo(o.name);
     }
+     @Override
+    public String toString() {
+        return "Student:" +
+                "name='";
+    }
 }
