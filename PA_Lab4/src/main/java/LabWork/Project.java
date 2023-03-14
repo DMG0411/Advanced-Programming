@@ -19,4 +19,11 @@ public class Project implements Comparable<Project> {
     public int compareTo(Project o) {
         return this.name.compareTo(o.name);
     }
+    
+    @Override
+    public String toString() {
+        return "Student:" +
+                "name='" + name+
+                " has projects:"+prefList;
+    }
 }
