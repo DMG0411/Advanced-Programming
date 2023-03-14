@@ -22,8 +22,7 @@ public class Project implements Comparable<Project> {
     
     @Override
     public String toString() {
-        return "Student:" +
-                "name='" + name+
-                " has projects:"+prefList;
+        return "Project:" +
+                "name='";
     }
 }
