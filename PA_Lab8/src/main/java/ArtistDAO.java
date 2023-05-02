@@ -1,25 +1,100 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ArtistDAO {
+public class ArtistDAO implements ArtistDAOInterface {
 
-    public void create(String name) throws SQLException {
-        Connection connection = Database.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO artists (name) VALUES (?)")) {
+    private final Connection connection;
+
+    public ArtistDAO(Connection connection) {
+        this.connection = connection;
+    }
+
+    @Override
+    public void createArtist(String name) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO artists (name) VALUES (?)");
             preparedStatement.setString(1, name);
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
+    @Override
+    public Artist getArtistById(int id) {
+        Artist artist = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
 
-    public Integer findByName(String name) throws SQLException{
-        Connection connection = Database.getConnection();
-        try(Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(
-                    "select id from artists where name='" + name +"'")
-            ){
-            return resultSet.next() ? resultSet.getInt(1) : null;
+        try {
+            statement = connection.prepareStatement(
+                    "SELECT * FROM artists WHERE id = ?"
+            );
+            statement.setInt(1, id);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                String name = rs.getString("name");
+                artist = new Artist(id, name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return artist;
+    }
+
+    @Override
+    public void updateArtist(Artist artist) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE artists SET name = ? WHERE id = ?"
+            );
+            statement.setString(1, artist.getName());
+            statement.setInt(2, artist.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
+    @Override
+    public void deleteArtist(int id) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM artists WHERE id = ?"
+            );
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Artist> getAllArtists() {
+        List<Artist> artists = new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            Statement statement = connection.prepareStatement(
+                    "SELECT * FROM artists"
+            );
+            rs = statement.executeQuery("SELECT * FROM artists");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+
+                Artist artist = new Artist(id, name);
+                artists.add(artist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return artists;
+    }
 }

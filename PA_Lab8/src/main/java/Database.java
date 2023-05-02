@@ -1,39 +1,26 @@
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    private static final String URL = "jdbc:postgresql://localhost:5432/";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "password";
-    private static Connection connection = null;
+    private static final HikariConfig config = new HikariConfig();
+    private static final HikariDataSource ds;
+
+    static {
+        config.setJdbcUrl( "jdbc:postgresql://localhost:5432/postgres" );
+        config.setUsername( "postgres" );
+        config.setPassword( "password" );
+        config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        ds = new HikariDataSource( config );
+    }
 
     private Database() {}
 
-    public static Connection getConnection() {
-        if (connection == null) {
-            createConnection();
-        }
-        return connection;
-    }
-
-    private static void createConnection() {
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            System.err.println(e);
-        }
-    }
-
-    public static void closeConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.commit();
-                connection.close();
-            }
-        } catch (SQLException e) {
-            System.err.println(e);
-        }
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();
     }
 }
