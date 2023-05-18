@@ -1,7 +1,7 @@
 package com.example.demo;
 
 public class Player {
-    private int id;
+    private final int id;
     private String name;
     private char piece;
 
@@ -21,5 +21,13 @@ public class Player {
 
     public char getPiece() {
         return piece;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPiece(char piece) {
+        this.piece = piece;
     }
 }
